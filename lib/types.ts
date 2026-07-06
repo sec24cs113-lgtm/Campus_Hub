@@ -50,6 +50,42 @@ export interface UserProfile {
   wallet_balance: number;
   resources_purchased: number;
   created_at: string;
+  admin_role?: boolean;
+  suspended?: boolean;
+  banned?: boolean;
+}
+
+export interface Transaction {
+  id: string;
+  buyer_id: string | null;
+  seller_id: string | null;
+  resource_id: string | null;
+  amount: number;
+  payment_status: string;
+  escrow_status: string;
+  order_status: string;
+  created_at: string;
+}
+
+export interface Refund {
+  id: string;
+  transaction_id: string | null;
+  buyer_id: string | null;
+  reason: string;
+  status: string;
+  amount: number;
+  created_at: string;
+  resolved_at: string | null;
+}
+
+export interface Notification {
+  id: string;
+  title: string;
+  message: string;
+  target_audience: string;
+  channel: string;
+  sent_by: string | null;
+  created_at: string;
 }
 
 export interface Database {
