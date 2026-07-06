@@ -2,9 +2,14 @@
 
 import { useState } from 'react';
 import { Search, Bell, CreditCard, ShoppingCart } from 'lucide-react';
+import { useAuth } from '@/lib/auth-context';
+import { useCart } from '@/lib/cart-context';
+import { formatInr } from '@/lib/currency';
 
 export default function TopBar() {
   const [query, setQuery] = useState('');
+  const { profile } = useAuth();
+  const { count, openCart } = useCart();
 
   return (
     <div
@@ -41,21 +46,24 @@ export default function TopBar() {
           style={{ backgroundColor: '#1e3a8a', color: '#ffffff' }}
         >
           <CreditCard className="w-4 h-4" />
-          <span>$1,240.50</span>
+          <span>{formatInr(profile?.wallet_balance ?? 0)}</span>
         </button>
 
         {/* Cart */}
         <button
+          onClick={openCart}
           className="relative w-10 h-10 rounded-xl flex items-center justify-center transition-all hover:opacity-80"
           style={{ backgroundColor: '#ffffff', border: '1.5px solid #e2e8f0' }}
         >
           <ShoppingCart className="w-5 h-5" style={{ color: '#475569' }} />
-          <span
-            className="absolute -top-1 -right-1 w-4 h-4 rounded-full text-white text-xs flex items-center justify-center font-bold"
-            style={{ backgroundColor: '#ef4444', fontSize: '10px' }}
-          >
-            2
-          </span>
+          {count > 0 && (
+            <span
+              className="absolute -top-1 -right-1 w-4 h-4 rounded-full text-white text-xs flex items-center justify-center font-bold"
+              style={{ backgroundColor: '#ef4444', fontSize: '10px' }}
+            >
+              {count}
+            </span>
+          )}
         </button>
 
         {/* Notification */}

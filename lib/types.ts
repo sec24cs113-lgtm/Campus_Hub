@@ -94,6 +94,12 @@ export interface Database {
         Update: Partial<Omit<UserProfile, 'id' | 'created_at'>>;
         Relationships: [];
       };
+      cart_items: {
+        Row: { id: string; resource_id: string; session_id: string; created_at: string };
+        Insert: { resource_id: string; session_id: string };
+        Update: Partial<{ resource_id: string; session_id: string }>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

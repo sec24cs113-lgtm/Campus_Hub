@@ -7,6 +7,7 @@ import { Plus } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 import Sidebar from './sidebar';
 import TopBar from './top-bar';
+import CartDrawer from './cart-drawer';
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -64,6 +65,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         <TopBar />
         <main className="flex-1 px-8 py-8">{children}</main>
       </div>
+      <CartDrawer />
       {/* Floating Upload Button */}
       <Link
         href="/upload"

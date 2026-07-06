@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { Heart, ShoppingCart, CheckCircle, Star } from 'lucide-react';
+import { Heart, ShoppingCart, CheckCircle, Star, Loader2 } from 'lucide-react';
 import type { Resource } from '@/lib/types';
 import { formatInr } from '@/lib/currency';
+import { useCart } from '@/lib/cart-context';
 
 interface ResourceCardProps {
   resource: Resource;
@@ -12,10 +13,18 @@ interface ResourceCardProps {
 export default function ResourceCard({ resource }: ResourceCardProps) {
   const [liked, setLiked] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
+  const [adding, setAdding] = useState(false);
+  const { addToCart } = useCart();
 
-  const handleCart = () => {
-    setAddedToCart(true);
-    setTimeout(() => setAddedToCart(false), 1500);
+  const handleCart = async () => {
+    if (adding) return;
+    setAdding(true);
+    const { error } = await addToCart(resource);
+    setAdding(false);
+    if (!error) {
+      setAddedToCart(true);
+      setTimeout(() => setAddedToCart(false), 1500);
+    }
   };
 
   const badgeColor =
@@ -81,13 +90,14 @@ export default function ResourceCard({ resource }: ResourceCardProps) {
           </span>
           <button
             onClick={handleCart}
-            className="w-9 h-9 rounded-xl flex items-center justify-center transition-all active:scale-90"
+            disabled={adding}
+            className="w-9 h-9 rounded-xl flex items-center justify-center transition-all active:scale-90 disabled:opacity-50"
             style={{
               backgroundColor: addedToCart ? '#10b981' : '#eff6ff',
               color: addedToCart ? '#ffffff' : '#3b82f6',
             }}
           >
-            <ShoppingCart className="w-4 h-4" />
+            {adding ? <Loader2 className="w-4 h-4 animate-spin" /> : addedToCart ? <CheckCircle className="w-4 h-4" /> : <ShoppingCart className="w-4 h-4" />}
           </button>
         </div>
       </div>
