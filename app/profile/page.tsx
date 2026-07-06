@@ -1,14 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   BookOpen, PlaySquare, FileText, Star, TrendingUp,
   ShoppingBag, Edit3, CheckCircle, CreditCard, Award,
-  Save, X, Loader2, User,
+  Save, X, Loader2, User, Trash2, Upload as UploadIcon,
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
+import { supabase } from '@/lib/supabase';
+import { formatInr } from '@/lib/currency';
+import type { Resource } from '@/lib/types';
 
-const tabs = ['Overview', 'My Purchases', 'Settings'];
+const tabs = ['Overview', 'My Uploads', 'My Purchases', 'Settings'];
 
 const defaultSettings = [
   { key: 'emailNotifications', label: 'Email Notifications', desc: 'Get notified about new resources in your subjects', on: true },
@@ -33,6 +36,52 @@ export default function ProfilePage() {
   const [editInstitution, setEditInstitution] = useState('');
   const [editBio, setEditBio] = useState('');
   const [editSubject, setEditSubject] = useState('');
+
+  const [uploads, setUploads] = useState<Resource[]>([]);
+  const [uploadsLoading, setUploadsLoading] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  const fetchUploads = useCallback(async () => {
+    if (!user) return;
+    setUploadsLoading(true);
+    setDeleteError(null);
+    const { data, error } = await supabase
+      .from('resources')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false });
+    if (error) {
+      setDeleteError(error.message);
+    } else {
+      setUploads(data as Resource[]);
+    }
+    setUploadsLoading(false);
+  }, [user]);
+
+  useEffect(() => {
+    if (activeTab === 'My Uploads' && user) {
+      fetchUploads();
+    }
+  }, [activeTab, user, fetchUploads]);
+
+  const handleDelete = async (resource: Resource) => {
+    if (!user) return;
+    setDeletingId(resource.id);
+    setDeleteError(null);
+    try {
+      if (resource.file_url) {
+        await supabase.storage.from('resource-files').remove([resource.file_url]);
+      }
+      const { error } = await supabase.from('resources').delete().eq('id', resource.id);
+      if (error) throw new Error(error.message);
+      setUploads((prev) => prev.filter((r) => r.id !== resource.id));
+    } catch (err) {
+      setDeleteError(err instanceof Error ? err.message : 'Failed to delete resource.');
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   const displayName = profile?.full_name || user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Student';
   const email = user?.email || '';
@@ -208,7 +257,7 @@ export default function ProfilePage() {
       <div className="grid grid-cols-4 gap-4">
         {[
           { label: 'Resources Purchased', value: String(profile?.resources_purchased ?? 0), icon: ShoppingBag, color: '#3b82f6' },
-          { label: 'Wallet Balance', value: `$${(profile?.wallet_balance ?? 0).toFixed(2)}`, icon: CreditCard, color: '#10b981' },
+          { label: 'Wallet Balance', value: formatInr(profile?.wallet_balance ?? 0), icon: CreditCard, color: '#10b981' },
           { label: 'Member Since', value: profile?.created_at ? new Date(profile.created_at).getFullYear().toString() : '—', icon: Award, color: '#f59e0b' },
           { label: 'Subject Focus', value: profile?.subject_badge || 'Not set', icon: TrendingUp, color: '#8b5cf6' },
         ].map(({ label, value, icon: Icon, color }) => (
@@ -309,6 +358,107 @@ export default function ProfilePage() {
                   </div>
                 </div>
               </div>
+            </div>
+          )}
+
+          {activeTab === 'My Uploads' && (
+            <div>
+              <div className="flex items-center justify-between mb-5">
+                <div>
+                  <h2 className="font-bold text-lg" style={{ color: '#1e293b' }}>My Uploads</h2>
+                  <p className="text-sm" style={{ color: '#94a3b8' }}>Resources you've shared with the community.</p>
+                </div>
+                <a
+                  href="/upload"
+                  className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90"
+                  style={{ backgroundColor: '#3b82f6', color: '#ffffff' }}
+                >
+                  <UploadIcon className="w-4 h-4" />
+                  Upload New
+                </a>
+              </div>
+
+              {deleteError && (
+                <div className="mb-4 px-4 py-3 rounded-xl text-sm" style={{ backgroundColor: '#fee2e2', color: '#b91c1c' }}>
+                  {deleteError}
+                </div>
+              )}
+
+              {uploadsLoading ? (
+                <div className="flex items-center justify-center py-12">
+                  <Loader2 className="w-6 h-6 animate-spin" style={{ color: '#3b82f6' }} />
+                </div>
+              ) : uploads.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <UploadIcon className="w-12 h-12 mb-4" style={{ color: '#cbd5e1' }} />
+                  <p className="font-semibold" style={{ color: '#64748b' }}>No uploads yet</p>
+                  <p className="text-sm mt-1" style={{ color: '#94a3b8' }}>Share your first resource with the community.</p>
+                  <a
+                    href="/upload"
+                    className="mt-4 px-6 py-2.5 rounded-xl text-sm font-semibold inline-block"
+                    style={{ backgroundColor: '#3b82f6', color: '#ffffff' }}
+                  >
+                    Upload a Resource
+                  </a>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {uploads.map((r) => {
+                    const Icon = r.type === 'video' ? PlaySquare : r.type === 'qp' ? FileText : BookOpen;
+                    const typeColor = r.type === 'video' ? '#3b82f6' : r.type === 'qp' ? '#10b981' : '#8b5cf6';
+                    return (
+                      <div
+                        key={r.id}
+                        className="flex items-center gap-4 p-4 rounded-xl transition-all"
+                        style={{ backgroundColor: '#ffffff', border: '1px solid #e8edf5' }}
+                      >
+                        <div
+                          className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden"
+                          style={{ backgroundColor: r.image_url ? 'transparent' : typeColor }}
+                        >
+                          {r.image_url ? (
+                            <img src={r.image_url} alt={r.title} className="w-full h-full object-cover" />
+                          ) : (
+                            <Icon className="w-6 h-6 text-white" />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-sm truncate" style={{ color: '#1e293b' }}>{r.title}</p>
+                          <p className="text-xs mt-0.5" style={{ color: '#94a3b8' }}>
+                            {r.subject} &bull; {r.author} &bull; <span className="capitalize">{r.type}</span>
+                          </p>
+                          <div className="flex items-center gap-3 mt-1.5">
+                            <span className="font-bold text-sm" style={{ color: '#3b82f6' }}>{formatInr(r.price)}</span>
+                            {r.verified ? (
+                              <span className="flex items-center gap-1 text-xs" style={{ color: '#10b981' }}>
+                                <CheckCircle className="w-3 h-3" /> Verified
+                              </span>
+                            ) : (
+                              <span className="text-xs" style={{ color: '#94a3b8' }}>Pending review</span>
+                            )}
+                            <span className="text-xs" style={{ color: '#94a3b8' }}>
+                              {new Date(r.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                            </span>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => handleDelete(r)}
+                          disabled={deletingId === r.id}
+                          className="w-9 h-9 rounded-xl flex items-center justify-center transition-all flex-shrink-0 disabled:opacity-50"
+                          style={{ backgroundColor: '#fee2e2', color: '#ef4444' }}
+                          title="Delete resource"
+                        >
+                          {deletingId === r.id ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <Trash2 className="w-4 h-4" />
+                          )}
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           )}
 

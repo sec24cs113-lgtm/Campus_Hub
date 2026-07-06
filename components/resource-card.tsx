@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Heart, ShoppingCart, CheckCircle, Star } from 'lucide-react';
 import type { Resource } from '@/lib/types';
+import { formatInr } from '@/lib/currency';
 
 interface ResourceCardProps {
   resource: Resource;
@@ -76,7 +77,7 @@ export default function ResourceCard({ resource }: ResourceCardProps) {
 
         <div className="flex items-center justify-between">
           <span className="font-bold text-base" style={{ color: '#3b82f6' }}>
-            ${resource.price.toFixed(2)}
+            {formatInr(resource.price)}
           </span>
           <button
             onClick={handleCart}
