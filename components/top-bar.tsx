@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Search, Bell, CreditCard, ShoppingCart } from 'lucide-react';
+import { formatINR } from '@/lib/utils';
 
 export default function TopBar() {
   const [query, setQuery] = useState('');
@@ -41,7 +42,7 @@ export default function TopBar() {
           style={{ backgroundColor: '#1e3a8a', color: '#ffffff' }}
         >
           <CreditCard className="w-4 h-4" />
-          <span>$1,240.50</span>
+          <span>{formatINR(1240.50)}</span>
         </button>
 
         {/* Cart */}

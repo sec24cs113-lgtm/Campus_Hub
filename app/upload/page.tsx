@@ -10,6 +10,7 @@ import { createClient } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
 import { useToast } from '@/hooks/use-toast';
+import { formatINR } from '@/lib/utils';
 
 const rawClient = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -369,7 +370,7 @@ export default function UploadPage() {
               <p className="text-sm" style={{ color: '#94a3b8' }}>Choose how much students will pay for your resource.</p>
             </div>
             <div>
-              <label className="block text-sm font-semibold mb-1.5" style={{ color: '#475569' }}>Price (USD)</label>
+              <label className="block text-sm font-semibold mb-1.5" style={{ color: '#475569' }}>Price (USD — stored, displayed as INR)</label>
               <div className="relative">
                 <DollarSign className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#94a3b8' }} />
                 <input
@@ -395,7 +396,7 @@ export default function UploadPage() {
                 <div className="flex justify-between"><span style={{ color: '#64748b' }}>Title</span><span className="font-semibold" style={{ color: '#1e293b' }}>{title}</span></div>
                 <div className="flex justify-between"><span style={{ color: '#64748b' }}>Subject</span><span className="font-semibold" style={{ color: '#1e293b' }}>{subject}</span></div>
                 <div className="flex justify-between"><span style={{ color: '#64748b' }}>File</span><span className="font-semibold" style={{ color: '#1e293b' }}>{file?.name}</span></div>
-                <div className="flex justify-between"><span style={{ color: '#64748b' }}>Price</span><span className="font-semibold" style={{ color: '#1e293b' }}>${parseFloat(price) || 0}</span></div>
+                <div className="flex justify-between"><span style={{ color: '#64748b' }}>Price</span><span className="font-semibold" style={{ color: '#1e293b' }}>{formatINR(parseFloat(price) || 0)}</span></div>
               </div>
             </div>
           </div>
