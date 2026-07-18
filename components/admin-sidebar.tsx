@@ -73,7 +73,7 @@ export default function AdminSidebar() {
             <Shield className="w-5 h-5 text-white" />
           </div>
           <div>
-            <span className="text-white font-bold text-lg tracking-tight block leading-tight">CollegeHub</span>
+            <span className="text-white font-bold text-lg tracking-tight block leading-tight">CampusHub</span>
             <span className="text-xs font-bold tracking-widest" style={{ color: '#60a5fa' }}>ADMIN PANEL</span>
           </div>
         </div>

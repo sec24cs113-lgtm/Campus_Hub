@@ -43,7 +43,7 @@ export default function Sidebar() {
           <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center flex-shrink-0">
             <GraduationCap className="w-5 h-5 text-white" />
           </div>
-          <span className="text-white font-bold text-xl tracking-tight">CollegeHub</span>
+          <span className="text-white font-bold text-xl tracking-tight">CampusHub</span>
         </div>
         <p className="text-xs font-semibold tracking-widest ml-10" style={{ color: 'rgba(255,255,255,0.4)' }}>
           ACADEMIC MARKETPLACE

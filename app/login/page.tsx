@@ -112,7 +112,7 @@ export default function LoginPage() {
               <GraduationCap className="w-6 h-6 text-white" />
             </div>
             <div>
-              <span className="text-white font-bold text-2xl tracking-tight">CollegeHub</span>
+              <span className="text-white font-bold text-2xl tracking-tight">CampusHub</span>
               <p className="text-xs font-semibold tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>
                 ACADEMIC MARKETPLACE
               </p>
@@ -156,7 +156,7 @@ export default function LoginPage() {
               className="w-10 h-10 rounded-full object-cover flex-shrink-0"
             />
             <div>
-              <p className="text-white text-sm font-semibold">&quot;CollegeHub transformed how I study for exams.&quot;</p>
+              <p className="text-white text-sm font-semibold">&quot;CampusHub transformed how I study for exams.&quot;</p>
               <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>Alex Rivera &bull; MIT, Computer Science</p>
             </div>
           </div>
@@ -174,7 +174,7 @@ export default function LoginPage() {
             <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center">
               <GraduationCap className="w-5 h-5 text-white" />
             </div>
-            <span className="font-bold text-xl" style={{ color: '#0d1b3e' }}>CollegeHub</span>
+            <span className="font-bold text-xl" style={{ color: '#0d1b3e' }}>CampusHub</span>
           </div>
 
           <div className="bg-white rounded-2xl shadow-sm overflow-hidden" style={{ border: '1px solid #e2e8f0' }}>

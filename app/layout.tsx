@@ -8,7 +8,7 @@ import ClientLayout from '@/components/client-layout';
 const inter = Inter({ subsets: ['latin'], weight: ['400', '500', '600', '700'] });
 
 export const metadata: Metadata = {
-  title: 'CollegeHub — Academic Marketplace',
+  title: 'CampusHub — Academic Marketplace',
   description: 'Your one-stop academic marketplace for video courses, question papers, and textbooks.',
 };
 

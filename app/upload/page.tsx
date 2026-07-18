@@ -134,7 +134,7 @@ export default function UploadPage() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="font-bold text-2xl mb-1" style={{ color: '#1e293b' }}>Upload a Resource</h1>
-        <p className="text-sm" style={{ color: '#94a3b8' }}>Share your academic materials with the CollegeHub community.</p>
+        <p className="text-sm" style={{ color: '#94a3b8' }}>Share your academic materials with the CampusHub community.</p>
       </div>
 
       {/* Stepper */}
