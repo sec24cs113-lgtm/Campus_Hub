@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: light; }
+
+html, body, #root { height: 100%; }
+
+body {
+  @apply bg-neutral-50 text-neutral-900 font-sans antialiased;
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-primary { @apply btn bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500; }
+  .btn-secondary { @apply btn bg-white text-neutral-700 border border-neutral-200 hover:bg-neutral-50 focus:ring-primary-500; }
+  .btn-ghost { @apply btn text-neutral-600 hover:bg-neutral-100; }
+  .btn-danger { @apply btn bg-error-600 text-white hover:bg-error-500 focus:ring-error-500; }
+  .btn-accent { @apply btn bg-accent-500 text-white hover:bg-accent-600 focus:ring-accent-500; }
+
+  .card { @apply bg-white rounded-xl border border-neutral-200 shadow-card; }
+  .card-soft { @apply bg-white rounded-xl border border-neutral-200 shadow-soft; }
+
+  .input {
+    @apply w-full rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm
+           placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold;
+  }
+
+  .section-title { @apply text-lg font-display font-bold text-neutral-900; }
+  .muted { @apply text-sm text-neutral-500; }
+}
+
+/* status pill colors */
+.status-Listed { @apply bg-neutral-100 text-neutral-600; }
+.status-Purchased { @apply bg-primary-50 text-primary-700; }
+.status-AwaitingSellerSubmission { @apply bg-warning-50 text-warning-600; }
+.status-ReceivedByLibrarian { @apply bg-accent-100 text-accent-700; }
+.status-ReadyForBuyerPickup { @apply bg-primary-100 text-primary-700; }
+.status-DeliveredToBuyer { @apply bg-success-50 text-success-600; }
+.status-Completed { @apply bg-success-500 text-white; }
+.status-Disputed { @apply bg-error-50 text-error-600; }
